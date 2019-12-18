@@ -9,7 +9,7 @@ from dynamodb import store_data
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
-def main():
+def lambda_handler(event, context):
     """Shows basic usage of the Gmail API.
     Queries for metrics about user's Gmail messages and stores to DynamoDB.
     """
@@ -68,4 +68,4 @@ def main():
     store_data('gmail-metrics', data)
 
 if __name__ == '__main__':
-    main()
+    lambda_handler(None, None)
