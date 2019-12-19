@@ -2,6 +2,7 @@ __pycache__
 .vscode
 env
 bin
+node_modules
 
 credentials.json
 token.pickle

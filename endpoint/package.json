@@ -1,0 +1,19 @@
+{
+  "name": "gmail-metric-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "npm run clean && npm run build && aws lambda update-function-code --function-name gmailMetricsEndpoint --zip-file fileb://build.zip --publish",
+    "clean": "rm build.zip",
+    "build": "zip -r build.zip node_modules index.js app.js routes.js"
+  },
+  "author": "Pratik Vaidya",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.593.0",
+    "aws-serverless-express": "^3.3.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
