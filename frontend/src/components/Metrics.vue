@@ -57,8 +57,8 @@ export default {
         .then((response) => {
           // console.log(response.data);
           self.metrics = response.data;
-          const labels = response.data.map(el => el.id).sort();
-          self.chartdata.labels = labels.map(el => moment.unix(el.N).format('MM/DD/YYYY - h:mm a'));
+          const labels = response.data.map(el => el.id.N).sort();
+          self.chartdata.labels = labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a'));
           self.chartdata.datasets[0].data = response.data.map(el => el['incoming-non-gmail-msgs'].N);
           self.chartdata.datasets[1].data = response.data.map(el => el['incoming-gmail-msgs'].N);
           self.chartdata.datasets[2].data = response.data.map(el => el['outgoing-non-gmail-msgs'].N);
