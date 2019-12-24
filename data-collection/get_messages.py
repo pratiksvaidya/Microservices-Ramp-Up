@@ -45,7 +45,7 @@ def lambda_handler(event, context):
 
     # Initialize data object
     data = {
-        'timestamp': query_date
+        'id': query_date
     }
 
     # Run each of the queries against the API and store msg count
@@ -65,7 +65,7 @@ def lambda_handler(event, context):
         data[key] = len(messages)
 
     # Store data to DynamoDB
-    store_data('gmail-metrics', data)
+    store_data('email-metrics', data)
 
 if __name__ == '__main__':
     lambda_handler(None, None)
