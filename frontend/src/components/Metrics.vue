@@ -46,7 +46,7 @@ export default {
       axios
         .create({
           baseURL:
-            'https://n2c2iurxbb.execute-api.us-east-1.amazonaws.com/prod/metrics',
+            'https://n2c2iurxbb.execute-api.us-east-1.amazonaws.com/prod/metrics?start=0&end=9999999999',
           withCredentials: false,
           headers: {
             Accept: 'application/json',
@@ -57,12 +57,12 @@ export default {
         .then((response) => {
           // console.log(response.data);
           self.metrics = response.data;
-          const labels = response.data.map(el => el.timestamp).sort();
-          self.chartdata.labels = labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a'));
-          self.chartdata.datasets[0].data = response.data.map(el => el['incoming-non-gmail-msgs']);
-          self.chartdata.datasets[1].data = response.data.map(el => el['incoming-gmail-msgs']);
-          self.chartdata.datasets[2].data = response.data.map(el => el['outgoing-non-gmail-msgs']);
-          self.chartdata.datasets[3].data = response.data.map(el => el['outgoing-gmail-msgs']);
+          const labels = response.data.map(el => el.id).sort();
+          self.chartdata.labels = labels.map(el => moment.unix(el.N).format('MM/DD/YYYY - h:mm a'));
+          self.chartdata.datasets[0].data = response.data.map(el => el['incoming-non-gmail-msgs'].N);
+          self.chartdata.datasets[1].data = response.data.map(el => el['incoming-gmail-msgs'].N);
+          self.chartdata.datasets[2].data = response.data.map(el => el['outgoing-non-gmail-msgs'].N);
+          self.chartdata.datasets[3].data = response.data.map(el => el['outgoing-gmail-msgs'].N);
           self.loaded = true;
         });
     },
