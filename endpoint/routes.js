@@ -17,7 +17,7 @@ router.get('/metrics', (req, res) => {
             ":start": { "N": req.query.start },
             ":end" : { "N" : req.query.end }
         },
-        FilterExpression: "id >= :start AND id < :end",
+        FilterExpression: "id >= :start AND id <= :end",
         TableName: METRICS_TABLE
     };
     // res.json(req.query.start)
