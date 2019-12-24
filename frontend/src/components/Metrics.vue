@@ -6,6 +6,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 import LineChart from './Chart';
 
 export default {
@@ -17,6 +18,18 @@ export default {
         datasets: [{
           label: 'Incoming Non-Gmail Messages',
           backgroundColor: 'rgba(0, 76, 153, 0.2)',
+          data: [],
+        }, {
+          label: 'Incoming Gmail Messages',
+          backgroundColor: 'rgba(175, 0, 42, 0.2)',
+          data: [],
+        }, {
+          label: 'Outgoing Non-Gmail Messages',
+          backgroundColor: 'rgba(0, 191, 108, 0.2)',
+          data: [],
+        }, {
+          label: 'Outgoing Gmail Messages',
+          backgroundColor: 'rgba(255, 145, 0, 0.2)',
           data: [],
         }],
       },
@@ -44,8 +57,12 @@ export default {
         .then((response) => {
           // console.log(response.data);
           self.metrics = response.data;
-          self.chartdata.labels = response.data.map(el => el.timestamp);
+          const labels = response.data.map(el => el.timestamp).sort();
+          self.chartdata.labels = labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a'));
           self.chartdata.datasets[0].data = response.data.map(el => el['incoming-non-gmail-msgs']);
+          self.chartdata.datasets[1].data = response.data.map(el => el['incoming-gmail-msgs']);
+          self.chartdata.datasets[2].data = response.data.map(el => el['outgoing-non-gmail-msgs']);
+          self.chartdata.datasets[3].data = response.data.map(el => el['outgoing-gmail-msgs']);
           self.loaded = true;
         });
     },
