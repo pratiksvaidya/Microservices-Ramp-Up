@@ -21,8 +21,8 @@ def get_tweets():
     ]
 
     # Metric queries
-    query_start = arrow.now().replace(minute=0, second=0).shift(hours=-1).timestamp
-    query_end = arrow.now().replace(minute=0, second=0).timestamp
+    query_start = arrow.utcnow().replace(minute=0, second=0).shift(hours=-1).timestamp
+    query_end = arrow.utcnow().replace(minute=0, second=0).timestamp
 
     # Initialize data object
     data = {
@@ -36,9 +36,10 @@ def get_tweets():
 
         count = 0
         for tweet in tweets:
-            if arrow.get(tweet.created_at).timestamp < query_start:
+            tweet_timestamp = arrow.get(tweet.created_at).timestamp
+            if tweet_timestamp < query_start:
                 break
-            elif arrow.get(tweet.created_at).timestamp <= query_end:
+            elif tweet_timestamp <= query_end:
                 count += 1
         
         print(count)
