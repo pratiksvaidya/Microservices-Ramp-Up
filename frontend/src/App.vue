@@ -20,4 +20,11 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+img {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 3px;
+  max-width: 75%;
+}
 </style>
