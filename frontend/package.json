@@ -11,7 +11,7 @@
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit",
     "build": "node build/build.js",
-    "deploy": "aws s3 sync ./dist s3://productiv-tech-ramp-up",
+    "deploy": "npm run build && aws s3 sync ./dist s3://productiv-tech-ramp-up"
   },
   "dependencies": {
     "axios": "^0.19.0",
