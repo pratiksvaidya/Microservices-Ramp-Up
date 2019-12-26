@@ -2,7 +2,15 @@
   <div class="metrics">
     <img src="../assets/gmail_logo.png">
     <div v-if="!loaded" class="loader"></div>
-    <date-picker v-if="loaded" v-model="dateRange" mode="range" class="picker"/>
+    <date-picker
+      v-if="loaded"
+      v-model="dateRange"
+      mode="range"
+      :input-props='{
+        style: "display: block; margin: 0 auto 35px auto; max-width: 500px; text-align: center",
+        placeholder: "Select a range of dates to filter the chart.",
+      }'
+    />
     <line-chart v-if="loaded" :chartData="chartdata" />
   </div>
 </template>
