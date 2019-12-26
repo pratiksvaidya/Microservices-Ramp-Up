@@ -1,5 +1,6 @@
 <template>
   <div class="metrics">
+    <img src="../assets/twitter_logo.png">
     <date-picker v-model="dateRange" mode="range" class="picker"/>
     <line-chart v-if="loaded" :chartData="chartdata" />
   </div>
