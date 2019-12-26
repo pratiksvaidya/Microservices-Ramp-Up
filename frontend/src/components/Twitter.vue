@@ -79,8 +79,9 @@ export default {
         .get(query)
         .then((response) => {
           // console.log(response.data);
-          self.metrics = response.data;
-          const labels = response.data.map(el => el.id.N).sort();
+          response.data.sort((a, b) => Number(a.id.N) - Number(b.id.N));
+
+          const labels = response.data.map(el => el.id.N);
           self.chartdata.labels = labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a'));
           self.chartdata.datasets[0].data = response.data.map(el => el['elonmusk'].N);
           self.chartdata.datasets[1].data = response.data.map(el => el['realDonaldTrump'].N);
