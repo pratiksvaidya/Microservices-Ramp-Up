@@ -15,7 +15,7 @@ export default {
   },
   watch: {
     chartData() {
-      this._data._chart.destroy();
+      this.data.chart.destroy();
       this.renderChart(this.chartData, this.options);
     },
   },

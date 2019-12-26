@@ -85,10 +85,10 @@ export default {
 
           const labels = response.data.map(el => el.id.N);
           self.chartdata.labels = labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a'));
-          self.chartdata.datasets[0].data = response.data.map(el => el['elonmusk'].N);
-          self.chartdata.datasets[1].data = response.data.map(el => el['realDonaldTrump'].N);
-          self.chartdata.datasets[2].data = response.data.map(el => el['BarackObama'].N);
-          self.chartdata.datasets[3].data = response.data.map(el => el['TheEconomist'].N);
+          self.chartdata.datasets[0].data = response.data.map(el => el.elonmusk.N);
+          self.chartdata.datasets[1].data = response.data.map(el => el.realDonaldTrump.N);
+          self.chartdata.datasets[2].data = response.data.map(el => el.BarackObama.N);
+          self.chartdata.datasets[3].data = response.data.map(el => el.TheEconomist.N);
           self.loaded = true;
         });
     },
