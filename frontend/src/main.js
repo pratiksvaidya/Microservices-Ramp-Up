@@ -12,11 +12,16 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     dateRange: null,
+    loaded: false,
   },
   mutations: {
     updateDateRange(state, value) {
       // mutate state
       state.dateRange = value;
+    },
+    updateLoaded(state, value) {
+      // mutate state
+      state.loaded = value;
     },
   },
   strict: true,
