@@ -46,7 +46,6 @@ export default {
           data: [],
         }],
       },
-      loaded: false,
     };
   },
   computed: {
@@ -56,38 +55,27 @@ export default {
       },
       set(value) {
         this.$store.commit('updateDateRange', value);
-        this.getMetrics();
+        this.storeMetrics();
+      },
+    },
+    loaded: {
+      get() {
+        return this.$store.state.loaded;
+      },
+      set(value) {
+        this.$store.commit('updateLoaded', value);
       },
     },
   },
   async mounted() {
     this.loaded = false;
-    this.getMetrics();
+    this.storeMetrics();
   },
   methods: {
-    getMetrics() {
-      const self = this;
-      let query = null;
-      if (this.$store.state.dateRange) {
-        const start = moment(this.$store.state.dateRange.start).unix();
-        const end = moment(this.$store.state.dateRange.end).unix();
-        query = '?start='.concat(start, '&end=', end);
-      } else {
-        query = '?start=0&end=9999999999'; // TODO: remove when handled in endpoint
-      }
-
-      axios
-        .create({
-          baseURL:
-            'https://fl2pqtejz0.execute-api.us-east-1.amazonaws.com/prod/metrics',
-          withCredentials: false,
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-        .get(query)
+    async storeMetrics() {
+      this.fetchData(this.getQuery())
         .then((response) => {
+          const self = this;
           // console.log(response.data);
           response.data.sort((a, b) => Number(a.id.N) - Number(b.id.N));
 
@@ -98,7 +86,32 @@ export default {
           self.chartdata.datasets[2].data = response.data.map(el => el.BarackObama.N);
           self.chartdata.datasets[3].data = response.data.map(el => el.TheEconomist.N);
           self.loaded = true;
-        });
+        })
+        // eslint-disable-next-line no-console
+        .catch(error => console.log(error));
+    },
+    getQuery() {
+      if (this.dateRange) {
+        return {
+          params: {
+            start: moment(this.$store.state.dateRange.start).unix(),
+            end: moment(this.$store.state.dateRange.end).unix(),
+          },
+        };
+      }
+
+      return { // TODO: remove when handled in endpoint
+        params: {
+          start: 0,
+          end: 9999999999,
+        },
+      };
+    },
+    async fetchData(query) {
+      const response = axios
+        .get('https://fl2pqtejz0.execute-api.us-east-1.amazonaws.com/prod/metrics', query);
+
+      return response;
     },
   },
   components: {

@@ -87,7 +87,8 @@ export default {
           self.chartdata.datasets[3].data = response.data.map(el => el['outgoing-gmail-msgs'].N);
           self.loaded = true;
         })
-        .catch(error => error);
+        // eslint-disable-next-line no-console
+        .catch(error => console.log(error));
     },
     getQuery() {
       if (this.dateRange) {
