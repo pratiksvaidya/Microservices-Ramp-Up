@@ -72,6 +72,42 @@ describe('Twitter.vue', () => {
       .toBe(true);
   });
 
+  it('should not contain date picker when loading', () => {
+    state = { loaded: false };
+
+    store = new Vuex.Store({ actions, mutations, state });
+
+    wrapper = shallowMount(Twitter, {
+      propsData: {},
+      mocks: {},
+      stubs: {},
+      methods: {},
+      store,
+      localVue,
+    });
+
+    expect(wrapper.contains(DatePicker))
+      .toBe(false);
+  });
+
+  it('should not contain line chart when loading', () => {
+    state = { loaded: false };
+
+    store = new Vuex.Store({ actions, mutations, state });
+
+    wrapper = shallowMount(Twitter, {
+      propsData: {},
+      mocks: {},
+      stubs: {},
+      methods: {},
+      store,
+      localVue,
+    });
+
+    expect(wrapper.contains(Chart))
+      .toBe(false);
+  });
+
   it('should contain the correct number of datasets', () => {
     expect(wrapper.vm.chartdata.datasets.length)
       .toBe(4);
