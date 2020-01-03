@@ -26,26 +26,7 @@ export default {
   name: 'Emails',
   data() {
     return {
-      chartdata: {
-        labels: [],
-        datasets: [{
-          label: 'Incoming Non-Gmail Messages',
-          backgroundColor: 'rgba(0, 76, 153, 0.2)',
-          data: [],
-        }, {
-          label: 'Incoming Gmail Messages',
-          backgroundColor: 'rgba(175, 0, 42, 0.2)',
-          data: [],
-        }, {
-          label: 'Outgoing Non-Gmail Messages',
-          backgroundColor: 'rgba(0, 191, 108, 0.2)',
-          data: [],
-        }, {
-          label: 'Outgoing Gmail Messages',
-          backgroundColor: 'rgba(255, 145, 0, 0.2)',
-          data: [],
-        }],
-      },
+      chartdata: null,
     };
   },
   computed: {
@@ -55,63 +36,70 @@ export default {
       },
       set(value) {
         this.$store.commit('updateDateRange', value);
-        this.storeMetrics();
       },
     },
-    loaded: {
+    loaded() {
+      return !!this.chartdata;
+    },
+    query: {
       get() {
-        return this.$store.state.loaded;
-      },
-      set(value) {
-        this.$store.commit('updateLoaded', value);
+        return {
+          params: {
+            start: moment(this.dateRange.start).unix(),
+            end: moment(this.dateRange.end).unix(),
+          },
+        };
       },
     },
   },
   async mounted() {
-    this.loaded = false;
-    this.storeMetrics();
+    if (this.dateRange) {
+      this.updateChartData();
+    } else {
+      this.dateRange = {
+        start: moment().startOf('month').toDate(),
+        end: moment().endOf('month').toDate(),
+      };
+    }
+  },
+  watch: {
+    dateRange() {
+      this.updateChartData();
+    },
   },
   methods: {
-    async storeMetrics() {
-      this.fetchData(this.getQuery())
-        .then((response) => {
-          const self = this;
-          // console.log(response.data);
-          response.data.sort((a, b) => Number(a.id.N) - Number(b.id.N));
+    async fetchData() {
+      const response = await axios
+        .get('https://n2c2iurxbb.execute-api.us-east-1.amazonaws.com/prod/metrics', this.query);
 
-          const labels = response.data.map(el => el.id.N);
-          self.chartdata.labels = labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a'));
-          self.chartdata.datasets[0].data = response.data.map(el => el['incoming-non-gmail-msgs'].N);
-          self.chartdata.datasets[1].data = response.data.map(el => el['incoming-gmail-msgs'].N);
-          self.chartdata.datasets[2].data = response.data.map(el => el['outgoing-non-gmail-msgs'].N);
-          self.chartdata.datasets[3].data = response.data.map(el => el['outgoing-gmail-msgs'].N);
-          self.loaded = true;
-        })
-        // eslint-disable-next-line no-console
-        .catch(error => console.log(error));
+      return response.data;
     },
-    getQuery() {
-      if (this.dateRange) {
-        return {
-          params: {
-            start: moment(this.$store.state.dateRange.start).unix(),
-            end: moment(this.$store.state.dateRange.end).unix(),
-          },
+    updateChartData() {
+      this.chartdata = null;
+      this.fetchData().then((data) => {
+        data.sort((a, b) => Number(a.id.N) - Number(b.id.N));
+        const labels = data.map(el => el.id.N);
+        this.chartdata = {
+          labels: labels.map(el => moment.unix(el).format('MM/DD/YYYY - h:mm a')),
+          datasets: [{
+            label: 'Incoming Non-Gmail Messages',
+            backgroundColor: 'rgba(0, 76, 153, 0.2)',
+            data: data.map(el => el['incoming-non-gmail-msgs'].N),
+          }, {
+            label: 'Incoming Gmail Messages',
+            backgroundColor: 'rgba(175, 0, 42, 0.2)',
+            data: data.map(el => el['incoming-gmail-msgs'].N),
+          }, {
+            label: 'Outgoing Non-Gmail Messages',
+            backgroundColor: 'rgba(0, 191, 108, 0.2)',
+            data: data.map(el => el['outgoing-non-gmail-msgs'].N),
+          }, {
+            label: 'Outgoing Gmail Messages',
+            backgroundColor: 'rgba(255, 145, 0, 0.2)',
+            data: data.map(el => el['outgoing-gmail-msgs'].N),
+          }],
         };
-      }
-
-      return { // TODO: remove when handled in endpoint
-        params: {
-          start: 0,
-          end: 9999999999,
-        },
-      };
-    },
-    async fetchData(query) {
-      const response = axios
-        .get('https://n2c2iurxbb.execute-api.us-east-1.amazonaws.com/prod/metrics', query);
-
-      return response;
+      });
     },
   },
   components: {
